@@ -23,9 +23,17 @@ async function run() {
 
         // API
         app.get('/services', async(req, res) => {
+            const size = parseInt(req.query.size);
             const query = {};
             const cursor = servicesCollection.find(query);
-            const services = await cursor.limit(3).toArray();
+            const services = await cursor.limit(size).toArray();
+            const count = await servicesCollection.estimatedDocumentCount()
+            res.send({count, services })
+        });
+        app.get('/card', async(req, res) => {
+            const query = {};
+            const cursor = servicesCollection.find(query);
+            const services = await cursor.toArray();
             res.send(services)
         });
         app.get('/services/:id', async(req, res) => {
