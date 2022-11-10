@@ -33,6 +33,7 @@ function verifyJWT(req, res, next){
     })
 }
 
+// mongodb Connection
 async function run() {
     try {
         const servicesCollection = client.db('floraTheChef').collection('services');
