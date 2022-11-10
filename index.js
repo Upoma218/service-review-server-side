@@ -39,6 +39,13 @@ async function run() {
         const itemsCollection = client.db('floraTheChef').collection('menu');
         // const reviewsCollection = client.db('floraTheChef').collection('reviews'); 
 
+        // JWT
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'});
+            res.send({token});
+        })
+
         // API
         app.get('/services', async(req, res) => {
             const size = parseInt(req.query.size);
