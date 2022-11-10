@@ -38,7 +38,7 @@ async function run() {
     try {
         const servicesCollection = client.db('floraTheChef').collection('services');
         const itemsCollection = client.db('floraTheChef').collection('menu');
-        // const reviewsCollection = client.db('floraTheChef').collection('reviews'); 
+        const reviewsCollection = client.db('floraTheChef').collection('reviews'); 
 
         // JWT
         app.post('/jwt', (req, res) => {
@@ -77,9 +77,53 @@ async function run() {
         app.get('/items/:id', async(req, res) => {
             const id = req.params.id;
             const query = {_id:ObjectId(id)};
-            const service = await itemsCollection.findOne(query);
-            res.send(service)
+            const items = await itemsCollection.findOne(query);
+            res.send(items)
         });
+
+        // reviews api
+        app.get('/reviews', async (req, res) => {
+           /*  const decoded = req.decoded;
+            
+            if(decoded.email !== req.query.email){
+                res.status(403).send({message: 'Unauthorized access'})
+            } */
+
+            let query = {};
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            const cursor = reviewsCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        });
+
+        app.post('/reviews',  async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
+        });
+        app.patch('/reviews/:id',verifyJWT, async(req, res) => {
+            const id = req.params.id;
+            const status = req.body.status;
+            const query = {_id:ObjectId(id)};
+            const updatedDoc = {
+                $set: {
+                    status:status
+                }
+            }
+            const result = await reviewsCollection.updateOne(query, updatedDoc);
+            res.send(result);
+        })
+        app.delete('/reviews/:id',verifyJWT, async(req, res) => {
+            const id = req.params.id;
+            const query = {_id:ObjectId(id)};
+            const result = await reviewsCollection.deleteOne(query);
+            console.log(result);
+            res.send(result);
+        })
 
     }
     finally {
