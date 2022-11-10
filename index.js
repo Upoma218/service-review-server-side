@@ -90,7 +90,7 @@ run().catch(err => console.error(err));
 
 
 app.get('/', (req, res) => {
-    res.send('Flora the chef server is running on port 5000');
+    res.send('Flora the chef server is running now on port 5000');
 });
 
 app.listen(port, () => { 
