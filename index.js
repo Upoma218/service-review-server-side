@@ -82,7 +82,7 @@ async function run() {
         });
 
         // reviews api
-        app.get('/reviews', async (req, res) => {
+        app.get('/cardReviews', async (req, res) => {
            /*  const decoded = req.decoded;
             
             if(decoded.email !== req.query.email){
@@ -100,12 +100,19 @@ async function run() {
             res.send(reviews);
         });
 
-        app.post('/reviews',  async (req, res) => {
+        app.get('/cardReviews/:id', async (req, res) =>{
+            const id = req.params.id;
+            const query = {serviceId :id};
+            const cursor = await reviewsCollection.find(query).toArray();
+            res.send(cursor);
+        })
+
+        app.post('/cardReviews',  async (req, res) => {
             const review = req.body;
             const result = await reviewsCollection.insertOne(review);
             res.send(result);
         });
-        app.patch('/reviews/:id',verifyJWT, async(req, res) => {
+        app.patch('/cardReviews/:id',verifyJWT, async(req, res) => {
             const id = req.params.id;
             const status = req.body.status;
             const query = {_id:ObjectId(id)};
@@ -117,7 +124,7 @@ async function run() {
             const result = await reviewsCollection.updateOne(query, updatedDoc);
             res.send(result);
         })
-        app.delete('/reviews/:id',verifyJWT, async(req, res) => {
+        app.delete('/cardReviews/:id',verifyJWT, async(req, res) => {
             const id = req.params.id;
             const query = {_id:ObjectId(id)};
             const result = await reviewsCollection.deleteOne(query);
