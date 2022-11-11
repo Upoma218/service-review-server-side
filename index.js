@@ -133,21 +133,7 @@ async function run() {
             const myReview = await reviewsCollection.findOne(query);
             res.send(myReview);
         })
-        app.put('/cardReviews/:id', async(req, res) => {
-            const id = req.params.id;
-            const query = {_id: ObjectId(id) };
-            const myReview = req.body;
-            const option = {upsert : true};
-            const updatedUser = {
-                $set: {
-                    name: user.name,
-                    address: user.address,
-                    email: user.email
-                }
-            }
-            const result = await userCollection.updateOne(query, updatedUser, option);
-            res.send(result);
-        })
+       
 
         app.post('/cardReviews',  async (req, res) => {
             const review = req.body;
@@ -158,12 +144,12 @@ async function run() {
             const id = req.params.id;
             const status = req.body.status;
             const query = {_id:ObjectId(id)};
-            const updatedDoc = {
+            const updatedReview = {
                 $set: {
                     status:status
                 }
             }
-            const result = await reviewsCollection.updateOne(query, updatedDoc);
+            const result = await reviewsCollection.updateOne(query, updatedReview);
             res.send(result);
         })
         app.delete('/cardReviews/:id',verifyJWT, async(req, res) => {
