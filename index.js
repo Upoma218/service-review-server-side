@@ -44,7 +44,7 @@ async function run() {
         // JWT
         app.post('/jwt', (req, res) => {
             const user = req.body;
-            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1d'});
             res.send({token});
         })
 
@@ -122,9 +122,31 @@ async function run() {
 
         app.get('/cardReviews/:id', async (req, res) =>{
             const id = req.params.id;
-            const query = {serviceId :id};
-            const cursor = await reviewsCollection.find(query).toArray();
+            const query = {_id: ObjectId(id) };
+            const cursor = await reviewsCollection.findOne(query);
             res.send(cursor);
+        })
+
+        app.get('/cardReviews', async (req, res) =>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const myReview = await reviewsCollection.findOne(query);
+            res.send(myReview);
+        })
+        app.put('/cardReviews/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id) };
+            const myReview = req.body;
+            const option = {upsert : true};
+            const updatedUser = {
+                $set: {
+                    name: user.name,
+                    address: user.address,
+                    email: user.email
+                }
+            }
+            const result = await userCollection.updateOne(query, updatedUser, option);
+            res.send(result);
         })
 
         app.post('/cardReviews',  async (req, res) => {
